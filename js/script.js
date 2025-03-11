@@ -1,81 +1,10 @@
-// var controller = new ScrollMagic.Controller();
-
-// $(function () {
-//   //var tween = TweenMax.to(".block-list", 1, {className: "+=scrollend"});
-
-//   var $block_list = $('.block-list'),
-//     $block_item = $block_list.find('.block-list__item'),
-//     block_list_width = $block_list.outerWidth(),
-//     block_item_width = $block_item.outerWidth(),
-//     total_width = block_item_width * $block_item.length,
-//     travel_distance = total_width - block_list_width + 228;
-
-//   var scene = new ScrollMagic.Scene({
-//     triggerElement: "#second",
-//     duration: '200%',
-//     triggerHook: 0
-//   })
-//     .setPin('.block-list')
-//     //.setTween(tween)
-//     .addTo(controller);
-
-//   scene.on('progress', function (e) {
-//     var progress = e.progress,
-//       move = -travel_distance * progress + "px";
-//     $block_list.css({
-//       transform: "translateX(" + move + ")"
-//     });
-//   });
-// });
-
-
-
-
-
-
-
-
-
-
-// LOAD PAGE TO LAST SECTION ON REFRESH + COMMENT OUT WHEN EDITING
-
-// window.addEventListener('load', function () {
-//   // Check if there's a section in the URL (for example, #section2)
-//   const sectionId = localStorage.getItem('lastScrollPosition');
-
-//   if (sectionId) {
-//     const section = document.getElementById(sectionId);
-//     if (section) {
-//       section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-//     }
-//   }
-// });
-
-// // Store the current section when the user scrolls
-// window.addEventListener('scroll', function () {
-//   const sections = document.querySelectorAll('section');
-//   sections.forEach(section => {
-//     const rect = section.getBoundingClientRect();
-//     if (rect.top <= 0 && rect.bottom >= 0) {
-//       localStorage.setItem('lastScrollPosition', section.id);
-//     }
-//   });
-// });
-
-
-
-
-
-
-
-
-
-
 // HERO IMAGE SCALE WIDTH ON SCROLL
+
+// if (window.innerWidth > 767) {} 
 
 window.addEventListener('scroll', () => {
   const scrollY = window.scrollY; // Get scroll position
-  const newWidth = 0 + scrollY * 0.11; // Scale width with scroll position
+  const newWidth = 0 + scrollY * 0.1112; // Scale width with scroll position
   const div = document.getElementById('scalable-div');
 
   // Apply the new width to the div (up to a max value)
@@ -97,15 +26,16 @@ function scaleDivOnScroll(id) {
     const offset = 900; // Example offset value (can be positive or negative)
     const scrollY = Math.max(0, -rect.top + offset); // Ensure it doesn't go negative
 
-    const newWidth = 0 + scrollY * 0.095; // Scale width with scroll position
+    const newWidth = 0 + scrollY * 0.1112; // Scale width with scroll position
     div.style.width = `${Math.min(newWidth, 100)}%`; // Set a maximum width of 100%
 
   });
 }
 
 // Apply the multiple ID's
+scaleDivOnScroll('scalable-div-1');
 scaleDivOnScroll('scalable-div-2');
-scaleDivOnScroll('scalable-div-3');
+
 
 
 
@@ -136,65 +66,104 @@ fullScaleDivOnScroll('full-scalable-div-1');
 
 
 
-// // PADDING EXPANDS WHEN STICKY
-
-// function expandDivOnScroll(id) {
-//   document.addEventListener('DOMContentLoaded', function () {
-//     const textBoxSticky = document.getElementById(id);
-//     const expand = textBoxSticky.offsetTop - 16;
-
-//     function expandTextBoxSticky() {
-//       if (window.pageYOffset > expand) {
-//         textBoxSticky.classList.add('expand');
-//       } else {
-//         textBoxSticky.classList.remove('expand');
-//       }
-//     }
-
-//     window.onscroll = function () {
-//       expandTextBoxSticky();
-//     };
-//   });
-// }
-
-// // Apply the scaling behavior to both divs
-// expandDivOnScroll('scroll-expand-1');
 
 
+function scrollExpand(id) {
+  window.addEventListener('scroll', function () {
+    var scrollPosition = window.scrollY;
+    var scrollExpand = document.getElementById(id);
+    var viewportHeight = window.innerHeight;
+
+    // Get the position of the scrollExpand element relative to the viewport
+    const elementRect = scrollExpand.getBoundingClientRect();
+    const elementTop = elementRect.top + window.scrollY;
+
+    // Offset position relative to when to start expanding the element
+    var offset = elementTop - (viewportHeight / 2.4);
+
+    console.log(offset);
+
+    if (scrollPosition > offset) {
+      // Adjust the height based on scroll position with a scaling factor
+      var scalingFactor = 1; // Change this to adjust the expansion speed
+      var newHeight = 0 + (scrollPosition - offset) * scalingFactor;
+
+      // Apply the new height
+      scrollExpand.style.height = newHeight + 'px';
+
+      // Optional: Cap the height to 50% of the viewport height (50vh)
+      if (newHeight > viewportHeight * 0.3) {
+        scrollExpand.style.height = (viewportHeight * 0.3) + 'px';
+      }
+    } else {
+      // If scroll is less than offset, keep the height at the initial value
+      scrollExpand.style.height = '0';
+    }
+  });
+}
+
+// Apply the multiple IDs
+scrollExpand('scrollexpand-1');
+scrollExpand('scrollexpand-2');
+
+
+
+// SCROLL PAST HERO SECTION LOGO SHRINKS
+
+// Function to change the state of the logo
+function changeLogoState(isIntersecting) {
+  const logo = document.querySelector('.logo-mark');
+  if (isIntersecting) {
+    logo.classList.remove('scrolled');
+  } else {
+    logo.classList.add('scrolled');
+  }
+}
+
+// Create an Intersection Observer instance
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    changeLogoState(entry.isIntersecting);
+  });
+}, {
+  threshold: 0.41 // Adjust the threshold as needed
+});
+
+// Observe the hero section
+const heroSection = document.querySelector('.screen-fit-column');
+console.log(heroSection);
+observer.observe(heroSection);
 
 
 
 
 
 
-window.onscroll = function () {
-  var scrollPosition = window.scrollY;
-  var scrollExpand = document.getElementById("scrollexpand");
-  var viewportHeight = window.innerHeight;
 
-  const stickyElement = document.querySelector('.expand-container');
-  const stickyRect = stickyElement.getBoundingClientRect();
-  const stickyY = stickyRect.top + window.scrollY;
+// SCROLL DOWN WEBPAGE HEADER HIDES - SCROLL UP HEADER SHOWS
 
-  var offset = stickyY - (viewportHeight / 2.4);
+let lastScrollY = window.scrollY;
+const header = document.querySelector('header'); // Adjust the selector to match your header element
+let timeoutId;
+let isHiding = false; // Flag to track if the header is scheduled to be hidden
 
-  console.log(offset);
+window.addEventListener('scroll', () => {
+  const currentScrollY = window.scrollY;
 
-  if (scrollPosition > offset) {
-    // Adjust the height based on scroll position with a scaling factor
-    var scalingFactor = 1; // Change this to adjust the expansion speed
-    var newHeight = 0 + (scrollPosition - offset) * scalingFactor;
-
-    // Apply the new height
-    scrollExpand.style.height = newHeight + 'px';
-
-    // Optional: Cap the height to 50% of the viewport height (50vh)
-    if (newHeight > viewportHeight * 0.5) {
-      scrollExpand.style.height = (viewportHeight * 0.5) + 'px';
+  if (currentScrollY > lastScrollY) {
+    // Scrolling down
+    if (!isHiding) {
+      isHiding = true;
+      timeoutId = setTimeout(() => {
+        header.classList.add('hidden');
+      }, 500); // Adjust the delay as needed (200ms in this example)
     }
   } else {
-    // If scroll is less than offset, keep the height at the initial value
-    scrollExpand.style.height = '0';
+    // Scrolling up
+    clearTimeout(timeoutId);
+    header.classList.remove('hidden');
+    isHiding = false; // Reset the flag
   }
-};
 
+  lastScrollY = currentScrollY;
+});
